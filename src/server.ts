@@ -9,6 +9,8 @@ const startServer = async () => {
     server.listen(port, () => {
       console.log(`Server listening on port ${port}...`);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 startServer();
