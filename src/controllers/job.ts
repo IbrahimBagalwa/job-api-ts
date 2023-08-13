@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 async function createJob(req: Request, res: Response) {
+  if (req.user) {
+    console.log(req.user.username);
+  }
+
   res.status(StatusCodes.CREATED).json({
     success: true,
     status: StatusCodes.CREATED,

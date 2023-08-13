@@ -42,6 +42,7 @@ UserSchema.pre<UserDoc>("save", async function () {
 UserSchema.methods.createJWT = function () {
   return generateToken(this._id, this.username);
 };
+
 UserSchema.methods.matchPassword = async function (encryptedPassword: string) {
   return await isPasswordValid(encryptedPassword, this.password);
 };

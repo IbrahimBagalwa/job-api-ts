@@ -12,4 +12,9 @@ const generateToken = (userId: string, username: string): string => {
   });
   return token;
 };
+export const verifyToken = (token: string) => {
+  if (typeof JWT_SECRET_KEY !== "string")
+    throw new Error("not secret key provided");
+  return jwt.verify(token, JWT_SECRET_KEY);
+};
 export default generateToken;

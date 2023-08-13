@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import "express-async-errors";
 import jobRouter from "./routes/jobRoutes";
 import authRouter from "./routes/authRoutes";
+import authMiddleware from "./middlewares/auth";
 dotenv.config();
 const app: Express = express();
 
@@ -19,7 +20,7 @@ app.get("/api/v2", (req: Request, res: Response) => {
   });
 });
 app.use("/api/v2/auth", authRouter);
-app.use("/api/v2/jobs", jobRouter);
+app.use("/api/v2/jobs", authMiddleware, jobRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandler);
