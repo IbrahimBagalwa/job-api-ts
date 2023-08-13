@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import Job from "../models/Job";
 
 async function createJob(req: Request, res: Response) {
-  if (req.user) {
-    console.log(req.user.username);
-  }
+  req.body.createdBy = req.user.userId;
+  const job = await Job.create(req.body);
 
   res.status(StatusCodes.CREATED).json({
     success: true,
     status: StatusCodes.CREATED,
     message: "Job created successfully",
+    job,
   });
 }
 async function getAllJobs(req: Request, res: Response) {
