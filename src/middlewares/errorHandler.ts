@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CustomErrorApi } from "../error";
 import { StatusCodes } from "http-status-codes";
 
-interface ErrorHandle {
+interface ErrorHandle extends Error {
   statusCode: StatusCodes;
   message: string;
 }
@@ -12,6 +12,7 @@ function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
+  console.log(err);
   if (err instanceof CustomErrorApi) {
     return res
       .status(err.statusCode)
@@ -21,7 +22,8 @@ function errorHandler(
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     success: false,
     status: StatusCodes.INTERNAL_SERVER_ERROR,
-    message: "Internal Server Error",
+    message: "Something went wrong, please try again later.",
+    err,
   });
 }
 export default errorHandler;
