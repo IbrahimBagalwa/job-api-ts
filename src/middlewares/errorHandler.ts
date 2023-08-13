@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CustomErrorApi } from "../error";
 import { StatusCodes } from "http-status-codes";
 
-interface ErrorHandle {
+interface ErrorHandle extends Error {
   statusCode: StatusCodes;
   message: string;
 }
@@ -12,6 +12,7 @@ function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
+  console.log(err);
   if (err instanceof CustomErrorApi) {
     return res
       .status(err.statusCode)

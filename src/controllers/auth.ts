@@ -4,11 +4,14 @@ import User from "../models/User";
 
 async function register(req: Request, res: Response) {
   const user = await User.create({ ...req.body });
+  const token = user.createJWT();
+
   res.status(StatusCodes.CREATED).json({
     success: true,
     status: StatusCodes.CREATED,
     message: "User created successfully",
-    user,
+    user: { username: user.username },
+    token,
   });
 }
 
