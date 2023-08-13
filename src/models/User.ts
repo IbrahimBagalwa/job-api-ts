@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import mongoose, { Document } from "mongoose";
-import { encryptPassword } from "../helpers/passwordEncDec";
+import { encryptPassword, isPasswordValid } from "../helpers/passwordEncDec";
 import generateToken from "../helpers/token";
 
 export interface UserDoc extends Document {
@@ -8,6 +8,7 @@ export interface UserDoc extends Document {
   email: string;
   password: string;
   createJWT: () => string;
+  matchPassword: (encryptedPwd: string) => Promise<boolean>;
 }
 const UserSchema = new mongoose.Schema<UserDoc>({
   username: {
@@ -40,6 +41,9 @@ UserSchema.pre<UserDoc>("save", async function () {
 
 UserSchema.methods.createJWT = function () {
   return generateToken(this._id, this.username);
+};
+UserSchema.methods.matchPassword = async function (encryptedPassword: string) {
+  return await isPasswordValid(encryptedPassword, this.password);
 };
 
 export default mongoose.model<UserDoc>("User", UserSchema);
