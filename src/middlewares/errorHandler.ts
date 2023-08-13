@@ -21,7 +21,8 @@ function errorHandler(
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     success: false,
     status: StatusCodes.INTERNAL_SERVER_ERROR,
-    message: "Internal Server Error",
+    message: "Something went wrong, please try again later.",
+    err,
   });
 }
 export default errorHandler;
