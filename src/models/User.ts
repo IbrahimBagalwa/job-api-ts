@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import mongoose from "mongoose";
+import { encryptPassword } from "../helpers/passwordEncDec";
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -22,6 +23,12 @@ const UserSchema = new mongoose.Schema({
     required: [true, "please provide username"],
     minLength: 6,
   },
+});
+
+UserSchema.pre("save", async function () {
+  if (typeof this.password === "string") {
+    this.password = await encryptPassword(this.password);
+  }
 });
 
 export default mongoose.model("User", UserSchema);
