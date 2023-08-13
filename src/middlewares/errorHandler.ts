@@ -7,6 +7,7 @@ interface ErrorHandle extends Error {
   code: number;
   keyValue: object;
   errors: object;
+  value: string;
 }
 function errorHandler(
   err: ErrorHandle,
@@ -14,8 +15,6 @@ function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
-  console.log(err);
-
   const customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message || "Something went wrong, please try again later.",
@@ -35,9 +34,11 @@ function errorHandler(
     customError.statusCode = StatusCodes.BAD_REQUEST;
   }
 
-  // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-  //   err,
-  // });
+  if (err.name && err.name === "CastError") {
+    customError.message = `Invalid ID ${err.value} provided`;
+    customError.statusCode = StatusCodes.BAD_REQUEST;
+  }
+
   res.status(customError.statusCode).json({
     success: false,
     status: customError.statusCode,
