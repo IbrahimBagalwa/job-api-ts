@@ -39,32 +39,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = __importDefault(require("http"));
-var app_1 = __importDefault(require("./app"));
-var connectDB_1 = __importDefault(require("./db/connectDB"));
-var server = http_1.default.createServer(app_1.default);
-var port = process.env.PORT || 8000;
-var startServer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                if (!(typeof process.env.MONGO_URI === "string")) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, connectDB_1.default)(process.env.MONGO_URI)];
-            case 1:
-                _a.sent();
-                server.listen(port, function () {
-                    console.log("Server listening on port");
-                });
-                _a.label = 2;
-            case 2: return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.log(error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+/* eslint-disable no-useless-escape */
+var mongoose_1 = __importDefault(require("mongoose"));
+var passwordEncDec_1 = require("../helpers/passwordEncDec");
+var token_1 = __importDefault(require("../helpers/token"));
+var UserSchema = new mongoose_1.default.Schema({
+    username: {
+        type: String,
+        required: [true, "please provide username"],
+        minLength: 3,
+        maxLength: 50,
+    },
+    email: {
+        type: String,
+        required: [true, "please provide email"],
+        match: [
+            /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+            "Please provide a valid email address",
+        ],
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: [true, "please provide username"],
+        minLength: 6,
+    },
+});
+UserSchema.pre("save", function () {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(typeof this.password === "string")) return [3 /*break*/, 2];
+                    _a = this;
+                    return [4 /*yield*/, (0, passwordEncDec_1.encryptPassword)(this.password)];
+                case 1:
+                    _a.password = _b.sent();
+                    _b.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
     });
-}); };
-startServer();
+});
+UserSchema.methods.createJWT = function () {
+    return (0, token_1.default)(this._id, this.username);
+};
+UserSchema.methods.matchPassword = function (encryptedPassword) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, passwordEncDec_1.isPasswordValid)(encryptedPassword, this.password)];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+};
+exports.default = mongoose_1.default.model("User", UserSchema);
