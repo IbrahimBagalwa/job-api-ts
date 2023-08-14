@@ -39,32 +39,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = __importDefault(require("http"));
-var app_1 = __importDefault(require("./app"));
-var connectDB_1 = __importDefault(require("./db/connectDB"));
-var server = http_1.default.createServer(app_1.default);
-var port = process.env.PORT || 8000;
-var startServer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var error_1;
+exports.isPasswordValid = exports.encryptPassword = void 0;
+var bcryptjs_1 = __importDefault(require("bcryptjs"));
+var genSalt = bcryptjs_1.default.genSalt, hash = bcryptjs_1.default.hash, compare = bcryptjs_1.default.compare;
+var encryptPassword = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var salt, hashPassword;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                if (!(typeof process.env.MONGO_URI === "string")) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, connectDB_1.default)(process.env.MONGO_URI)];
+            case 0: return [4 /*yield*/, genSalt(10)];
             case 1:
-                _a.sent();
-                server.listen(port, function () {
-                    console.log("Server listening on port");
-                });
-                _a.label = 2;
-            case 2: return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.log(error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                salt = _a.sent();
+                return [4 /*yield*/, hash(password, salt)];
+            case 2:
+                hashPassword = _a.sent();
+                return [2 /*return*/, hashPassword];
         }
     });
 }); };
-startServer();
+exports.encryptPassword = encryptPassword;
+var isPasswordValid = function (currentPassword, hashPassword) { return __awaiter(void 0, void 0, void 0, function () {
+    var isPasswordChecked;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, compare(currentPassword, hashPassword)];
+            case 1:
+                isPasswordChecked = _a.sent();
+                return [2 /*return*/, isPasswordChecked];
+        }
+    });
+}); };
+exports.isPasswordValid = isPasswordValid;

@@ -35,36 +35,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = __importDefault(require("http"));
-var app_1 = __importDefault(require("./app"));
-var connectDB_1 = __importDefault(require("./db/connectDB"));
-var server = http_1.default.createServer(app_1.default);
-var port = process.env.PORT || 8000;
-var startServer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                if (!(typeof process.env.MONGO_URI === "string")) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, connectDB_1.default)(process.env.MONGO_URI)];
-            case 1:
-                _a.sent();
-                server.listen(port, function () {
-                    console.log("Server listening on port");
-                });
-                _a.label = 2;
-            case 2: return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.log(error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
+var error_1 = require("../error");
+var token_1 = require("../helpers/token");
+function authMiddleware(req, res, next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var authorization, token, payload;
+        return __generator(this, function (_a) {
+            authorization = req.headers.authorization;
+            if (!authorization || !authorization.startsWith("Bearer ")) {
+                throw new error_1.UnauthorizedError("Authication invalid");
+            }
+            token = authorization.split(" ")[1];
+            try {
+                payload = (0, token_1.verifyToken)(token);
+                req.user = { userId: payload.userId, username: payload.username };
+                next();
+            }
+            catch (error) {
+                throw new error_1.UnauthorizedError("Authication invalid");
+            }
+            return [2 /*return*/];
+        });
     });
-}); };
-startServer();
+}
+exports.default = authMiddleware;
