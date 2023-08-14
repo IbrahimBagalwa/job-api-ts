@@ -29,7 +29,7 @@ app.use(helmet());
 app.use(cors());
 app.use(xss());
 
-app.get("/api/v2", (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
     success: true,
     status: StatusCodes.OK,
