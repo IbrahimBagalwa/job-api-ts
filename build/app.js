@@ -16,8 +16,12 @@ var helmet_1 = __importDefault(require("helmet"));
 var cors_1 = __importDefault(require("cors"));
 var express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 var xss_clean_1 = __importDefault(require("xss-clean"));
+var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+var yamljs_1 = __importDefault(require("yamljs"));
+var responseHTML_1 = require("./helpers/responseHTML");
 dotenv_1.default.config();
 var app = (0, express_1.default)();
+var swaggerDocumentation = yamljs_1.default.load("./swagger.yaml");
 app.set("trust proxy", 1);
 app.use((0, express_rate_limit_1.default)({
     windowMs: 5 * 60 * 1000,
@@ -30,13 +34,10 @@ app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)());
 app.use((0, xss_clean_1.default)());
-app.get("/api/v2", function (req, res) {
-    res.status(http_status_codes_1.StatusCodes.OK).json({
-        success: true,
-        status: http_status_codes_1.StatusCodes.OK,
-        message: "Welcom to our Job API",
-    });
+app.get("/", function (req, res) {
+    res.status(http_status_codes_1.StatusCodes.OK).send(responseHTML_1.responseHTML);
 });
+app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocumentation));
 app.use("/api/v2/auth", authRoutes_1.default);
 app.use("/api/v2/jobs", auth_1.default, jobRoutes_1.default);
 app.use(notFound_1.default);

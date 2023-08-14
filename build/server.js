@@ -55,7 +55,7 @@ var startServer = function () { return __awaiter(void 0, void 0, void 0, functio
             case 1:
                 _a.sent();
                 server.listen(port, function () {
-                    console.log("Server listening on port");
+                    console.log("Server listening on port ".concat(port));
                 });
                 _a.label = 2;
             case 2: return [3 /*break*/, 4];
