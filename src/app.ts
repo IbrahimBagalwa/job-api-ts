@@ -11,8 +11,13 @@ import helmet from "helmet";
 import cors from "cors";
 import rateLimiter from "express-rate-limit";
 import xss from "xss-clean";
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+import { responseHTML } from "./helpers/responseHTML";
 dotenv.config();
 const app: Express = express();
+
+const swaggerDocumentation = YAML.load("./swagger.yaml");
 
 app.set("trust proxy", 1);
 app.use(
@@ -30,12 +35,9 @@ app.use(cors());
 app.use(xss());
 
 app.get("/", (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json({
-    success: true,
-    status: StatusCodes.OK,
-    message: "Welcom to our Job API",
-  });
+  res.status(StatusCodes.OK).send(responseHTML);
 });
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocumentation));
 app.use("/api/v2/auth", authRouter);
 app.use("/api/v2/jobs", authMiddleware, jobRouter);
 

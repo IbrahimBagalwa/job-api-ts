@@ -10,7 +10,7 @@ const startServer = async () => {
     if (typeof process.env.MONGO_URI === "string") {
       await connectDB(process.env.MONGO_URI);
       server.listen(port, () => {
-        console.log(`Server listening on port`);
+        console.log(`Server listening on port ${port}`);
       });
     }
   } catch (error) {

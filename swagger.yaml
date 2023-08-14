@@ -1,0 +1,218 @@
+openapi: 3.0.0
+info:
+  title: jobs APII
+  contact: {}
+  version: "1.0"
+servers:
+  - url: https://calm-teal-indri-gear.cyclic.cloud/api/v2
+    variables: {}
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login User
+      operationId: LoginUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/LoginUserRequest"
+                - example:
+                    email: jack@gmail.com
+                    password: zaqxswcde
+            example:
+              email: jack@gmail.com
+              password: zaqxswcde
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Rester User
+      operationId: ResterUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/ResterUserRequest"
+                - example:
+                    username: Ibrahim Bagalwa
+                    email: didi@gmail.com
+                    password: zaqxswcde
+            example:
+              username: Ibrahim Bagalwa
+              email: didi@gmail.com
+              password: zaqxswcde
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+  /jobs:
+    post:
+      tags:
+        - jobs
+      summary: Create Job
+      operationId: CreateJob
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/CreateJobRequest"
+                - example:
+                    company: Facebook
+                    position: fullstack developer
+                    status: interview
+            example:
+              company: Facebook
+              position: fullstack developer
+              status: interview
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+    get:
+      tags:
+        - jobs
+      summary: Get all Jobs
+      operationId: GetallJobs
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /jobs/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The job ID.
+    get:
+      tags:
+        - jobs
+      summary: Get Single Job
+      operationId: GetSingleJob
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+    patch:
+      tags:
+        - jobs
+      summary: Update Job
+      operationId: UpdateJob
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /jobs/64d90d18098dea47f1c94cee:
+    delete:
+      tags:
+        - jobs
+      summary: Delete Job
+      operationId: DeleteJob
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+components:
+  schemas:
+    LoginUserRequest:
+      title: LoginUserRequest
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: ornellabash@gmail.com
+        password: zaqxswcde
+    ResterUserRequest:
+      title: ResterUserRequest
+      required:
+        - username
+        - email
+        - password
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        username: Ibrahim Bagalwa
+        email: didi@gmail.com
+        password: zaqxswcde
+    CreateJobRequest:
+      title: CreateJobRequest
+      required:
+        - company
+        - position
+        - status
+      type: object
+      properties:
+        company:
+          type: string
+        position:
+          type: string
+        status:
+          type: string
+      example:
+        company: Facebook
+        position: fullstack developer
+        status: interview
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+  - name: Auth
+    description: ""
+  - name: jobs
+    description: ""
