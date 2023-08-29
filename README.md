@@ -2,9 +2,9 @@
 
 ## Features
 
-- **Database Connection**: Connect to MongoDB using `connect.js`.
+- **Database Connection**: Connect to MongoDB using `connect.ts`.
 - **Environment Setup**: Create `.env` follow `.env.example`.
-- **Routers**: Use `auth.js` and `jobs.js` for routes.
+- **Routers**: Use `auth.ts` and `jobs.ts` for routes.
 - **User Registration**: Validate and hash user data, generate tokens.
 - **User Login**: Authenticate users, generate tokens.
 - **Mongoose Errors**: Handle validation, duplicate email, and cast errors.
